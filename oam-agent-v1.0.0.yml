@@ -1,0 +1,81 @@
+openapi: "3.0.2"
+info:
+  title: "OAM Agent API"
+  description: ""
+  version: "1.0.0"
+
+servers:
+- url: "http://10.147.40.122:1995/api/v1/"
+  description: Development server
+- url: "http://10.147.40.122:1992/api/v1/"
+  description: Development server
+- url: "http://10.147.40.122/api/v1/"
+  description: Production Server
+
+
+paths:
+  /ne/{ne}/ssh/:
+    post:
+      tags:
+      - Commands line Action to Network Element
+      summary: "Run command line to NE"
+      description: "Run command line to NE"
+      consumes:
+        - application/json
+      operationId: runCommandLine
+      parameters:
+        - in: path
+          name: ne
+          schema:
+            type: string
+          required: true
+          description: NE to run ssh commands
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cmds:
+                  type: array
+                  items:
+                    type: string
+
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SshResponse"
+        "404":
+          description: Not found response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    SshResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: array
+          items:
+            type: object
+            properties:
+              time:
+                type: string
+              cmd:
+                type: string
+              output:
+                type: string
